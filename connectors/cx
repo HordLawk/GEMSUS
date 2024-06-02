@@ -1,0 +1,23 @@
+#!/bin/bash
+
+if [ $# -eq 0 ]
+  then
+    echo -e "\n\nMongoDB Kafka Tutorial - Configure Kafka Connect helper script\n\nThis script will pass a JSON file to the Kafka Connect service.\n\nExample:\ncx sinmplesource.json\n\n"
+    exit 1
+fi
+
+send_request(){
+  curl -s -o /dev/null -X POST -H "Content-Type: application/json" -d @$1 http://connect:8083/connectors -w "%{http_code}"
+}
+
+for i in {1..18}
+do
+  http_status=$( send_request $1 )
+  echo $http_status
+  if [ $http_status -eq "201" ]
+  then
+    break
+  else
+    sleep 10
+  fi
+done
