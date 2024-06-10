@@ -144,7 +144,9 @@ services:
     build:
       context: .
       dockerfile: app.Dockerfile
-    command: node index.js
+    ports:
+      - "5028:3000"
+    command: node server/index.mjs
     depends_on:
       - mongo1-setup
     networks:

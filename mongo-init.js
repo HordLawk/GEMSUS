@@ -35,7 +35,7 @@ db.createCollection('secretaria', {
             bsonType: 'object',
             required: ['senha', 'nome', 'regiao'],
             properties: {
-                // codigo da regiao?
+                // codigo da regiao
                 _id: {
                     bsonType: 'string',
                     minLength: 1,
@@ -51,7 +51,6 @@ db.createCollection('secretaria', {
                     minLength: 1,
                     maxLength: 64,
                 },
-                // precisa disso?
                 estado: {
                     bsonType: 'string',
                     // UF
@@ -84,9 +83,9 @@ db.createCollection('medicamento', {
                 },
                 tarja: {
                     bsonType: 'string',
+                    // A = Amarela, V = Vermelha, P = Preta
                     enum: ['A', 'V', 'P'],
                 },
-                // resto dos campos
             },
         },
     },
@@ -118,7 +117,6 @@ db.createCollection('estoqueLocal', {
                     bsonType: 'int',
                     minimum: 0,
                 },
-                // codigo do local?
                 local: {
                     bsonType: 'string',
                     minLength: 1,
@@ -156,7 +154,6 @@ db.createCollection('paciente', {
                     minLength: 1,
                     maxLength: 64,
                 },
-                // o que e isso?
                 posto: {
                     bsonType: 'string',
                     minLength: 1,
@@ -199,8 +196,11 @@ db.createCollection('receita', {
             bsonType: 'object',
             required: ['data', 'medicamento_id', 'paciente_id', 'medico_id'],
             properties: {
-                // o que é isso?
-                prontidao: {bsonType: 'bool'},
+                prontidao: {
+                    bsonType: 'string',
+                    // E = Emergencial, S = Semanal, M = Mensal
+                    enum: ['E', 'S', 'M'],
+                },
                 comRetencao: {bsonType: 'bool'},
                 data: {bsonType: 'date'},
                 medicamento_id: {bsonType: 'objectId'},
