@@ -1,16 +1,17 @@
 <script setup>
 const items = ref([]);
-const res = await useFetch('/api/farmaceuticos');
-if(res.ok) items.value = res.data;
+// const res = await useFetch('/api/farmaceuticos');
+// if(res.ok) items.value = res.data;
 const updateFarmaceutico = async ({cpf, nome, local}) => {
-	const res = await $fetch(`/api/farmaceuticos/${cpf}`, {
-		method: 'PUT',
-		body: {nome, local},
-	});
-	if(!res.ok) return alert('erro');
-	const {data} = await $fetch('/api/famraceuticos');
-	items.value = data;
+	// const res = await $fetch(`/api/farmaceuticos/${cpf}`, {
+	// 	method: 'PUT',
+	// 	body: {nome, local},
+	// });
+	// if(!res.ok) return alert('erro');
+	// const {data} = await $fetch('/api/famraceuticos');
+	// items.value = data;
 };
+initializeWebSocket('/farmaceuticos').on('hello', console.log);
 </script>
 
 <template>

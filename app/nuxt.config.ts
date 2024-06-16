@@ -2,4 +2,5 @@
 export default defineNuxtConfig({
   devtools: { enabled: true },
   routeRules: {'/': {redirect: '/estoque-local'}},
+  nitro: {experimental: {websocket: true}},
 });
