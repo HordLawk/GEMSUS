@@ -11,7 +11,7 @@ const updateFarmaceutico = async ({cpf, nome, local}) => {
 	// const {data} = await $fetch('/api/famraceuticos');
 	// items.value = data;
 };
-initializeWebSocket('/farmaceuticos').on('hello', console.log);
+initializeWebSocket('/farmaceuticos').on('hello', message => console.log(message.toString()));
 </script>
 
 <template>
