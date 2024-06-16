@@ -23,7 +23,12 @@ export default defineNitroPlugin((nitroApp: NitroApp) => {
     const consumer = kafka.consumer({ groupId: socket.id });
     await consumer.connect();
     await consumer.subscribe({ topic: 'GEMSUS.farmaceutico', fromBeginning: true });
-    await consumer.run({eachMessage: async ({ message }) => void(socket.emit('hello', message.value))});
+    await consumer.run({eachMessage: async ({ message }) => {
+        const objStr = message.value?.toString('utf-8');
+        const obj = objStr ? JSON.parse(objStr) : {};
+        console.log(obj);
+        socket.emit('hello', obj.fullDocument);
+    }});
     socket.on("disconnect", consumer.disconnect);
   });
 
