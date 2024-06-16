@@ -27,7 +27,8 @@ export default defineNitroPlugin((nitroApp: NitroApp) => {
         const objStr = message.value?.toString('utf-8');
         const obj = objStr ? JSON.parse(objStr) : {};
         console.log(obj);
-        socket.emit('hello', JSON.parse(obj.payload).fullDocument);
+        const {_id: cpf, nome, local} = JSON.parse(obj.payload).fullDocument;
+        socket.emit('hello', {cpf, nome, local});
     }});
     socket.on("disconnect", consumer.disconnect);
   });
