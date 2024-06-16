@@ -3,7 +3,7 @@
     "config": {
         "connector.class": "com.mongodb.kafka.connect.MongoSinkConnector",
         "topics": "GEMSUS.farmaceutico,GEMSUS.secretaria,GEMSUS.estoqueRegional",
-        "connection.uri": "mongodb://mongo1,mongo2,mongo3/?replicaSet=rs0",
+        "connection.uri": "mongodb://mongo1,mongo2/?replicaSet=rs0",
         "key.converter": "org.apache.kafka.connect.storage.StringConverter",
         "value.converter": "org.apache.kafka.connect.json.JsonConverter",
         "value.converter.schemas.enable": false,

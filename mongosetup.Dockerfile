@@ -6,6 +6,7 @@ RUN apt-get install -y curl
 
 COPY config-replica.js /
 COPY mongo-init.js /
-COPY connectors/*.json /connectors
+COPY connectors/sink.json /connectors/
+COPY connectors/source.json /connectors/
 COPY connectors/cx /usr/local/bin/
 RUN chmod +x /usr/local/bin/cx
