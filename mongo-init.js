@@ -33,7 +33,7 @@ db.createCollection('secretaria', {
     validator: {
         $jsonSchema: {
             bsonType: 'object',
-            required: ['senha', 'nome', 'regiao'],
+            required: ['senha', 'nome'],
             properties: {
                 // codigo da regiao
                 _id: {

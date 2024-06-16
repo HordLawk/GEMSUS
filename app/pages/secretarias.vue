@@ -31,9 +31,6 @@ initializeWebSocket('/secretarias').on('hello', message => items.value.push(mess
 					<input type="text" v-model="item.nome">
 				</td>
 				<td>
-					<input type="text" v-model="item.regiao">
-				</td>
-				<td>
 					<input type="text" v-model="item.estado">
 				</td>
 				<td>
