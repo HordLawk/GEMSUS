@@ -2,7 +2,7 @@ import type { NitroApp } from "nitropack";
 import { Server as Engine } from "engine.io";
 import { Server } from "socket.io";
 import { defineEventHandler } from "h3";
-import {Kafka} from 'kafkajs';
+import { Kafka } from 'kafkajs';
 
 console.log('criando');
 const kafka = new Kafka({
@@ -14,44 +14,77 @@ const kafka = new Kafka({
 });
 
 export default defineNitroPlugin((nitroApp: NitroApp) => {
-  const engine = new Engine();
-  const io = new Server();
+    const engine = new Engine();
+    const io = new Server();
 
-  io.bind(engine);
+    io.bind(engine);
 
-  io.of('farmaceuticos').on("connection", async (socket) => {
-    const consumer = kafka.consumer({ groupId: socket.id });
-    await consumer.connect();
-    await consumer.subscribe({ topic: 'GEMSUS.farmaceutico', fromBeginning: true });
-    await consumer.run({eachMessage: async ({ message }) => {
-        const objStr = message.value?.toString('utf-8');
-        const obj = objStr ? JSON.parse(objStr) : {};
-        console.log(obj);
-        const {_id: cpf, nome, local} = JSON.parse(obj.payload).fullDocument;
-        socket.emit('hello', {cpf, nome, local});
-    }});
-    socket.on("disconnect", consumer.disconnect);
-  });
+    io.of('/farmaceuticos').on("connection", async (socket) => {
+        const consumer = kafka.consumer({ groupId: socket.id });
+        await consumer.connect();
+        await consumer.subscribe({ topic: 'GEMSUS.farmaceutico', fromBeginning: true });
+        await consumer.run({
+            eachMessage: async ({ message }) => {
+                const objStr = message.value?.toString('utf-8');
+                const obj = objStr ? JSON.parse(objStr) : {};
+                const { _id: cpf, nome, local } = JSON.parse(obj.payload).fullDocument;
+                socket.emit('hello', { cpf, nome, local });
+            }
+        });
+        socket.on("disconnect", consumer.disconnect);
+    });
 
-  nitroApp.router.use("/socket.io/", defineEventHandler({
-    handler(event) {
-      engine.handleRequest(event.node.req, event.node.res);
-      event._handled = true;
-    },
-    websocket: {
-      open(peer) {
-        const nodeContext = peer.ctx.node;
-        const req = nodeContext.req;
+    io.of('/secretarias').on("connection", async (socket) => {
+        const consumer = kafka.consumer({ groupId: socket.id });
+        await consumer.connect();
+        await consumer.subscribe({ topic: 'GEMSUS.secretaria', fromBeginning: true });
+        await consumer.run({
+            eachMessage: async ({ message }) => {
+                const objStr = message.value?.toString('utf-8');
+                const obj = objStr ? JSON.parse(objStr) : {};
+                console.log(obj);
+                const { _id: cnpj, nome, regiao, estado, cidade } = JSON.parse(obj.payload).fullDocument;
+                socket.emit('hello', { cnpj, nome, regiao, estado, cidade });
+            }
+        });
+        socket.on("disconnect", consumer.disconnect);
+    });
 
-        // @ts-expect-error private method
-        engine.prepare(req);
+    io.of('/medicamentos').on("connection", async (socket) => {
+        const consumer = kafka.consumer({ groupId: socket.id });
+        await consumer.connect();
+        await consumer.subscribe({ topic: 'GEMSUS.medicamento', fromBeginning: true });
+        await consumer.run({
+            eachMessage: async ({ message }) => {
+                const objStr = message.value?.toString('utf-8');
+                const obj = objStr ? JSON.parse(objStr) : {};
+                console.log(obj);
+                const { _id: registro, nome, tarja } = JSON.parse(obj.payload).fullDocument;
+                socket.emit('hello', { registro, nome, tarja });
+            }
+        });
+        socket.on("disconnect", consumer.disconnect);
+    });
 
-        const rawSocket = nodeContext.req.socket;
-        const websocket = nodeContext.ws;
+    nitroApp.router.use("/socket.io/", defineEventHandler({
+        handler(event) {
+            engine.handleRequest(event.node.req, event.node.res);
+            event._handled = true;
+        },
+        websocket: {
+            open(peer) {
+                const nodeContext = peer.ctx.node;
+                const req = nodeContext.req;
 
-        // @ts-expect-error private method
-        engine.onWebSocket(req, rawSocket, websocket);
-      }
-    }
-  }));
+                // @ts-expect-error private method
+                engine.prepare(req);
+
+                const rawSocket = nodeContext.req.socket;
+                const websocket = nodeContext.ws;
+
+                // @ts-expect-error private method
+                engine.onWebSocket(req, rawSocket, websocket);
+            }
+        }
+    }));
 });

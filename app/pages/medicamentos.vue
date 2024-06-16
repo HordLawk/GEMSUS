@@ -1,16 +1,17 @@
 <script setup>
 const items = ref([]);
-const res = await useFetch('/api/medicamentos');
-if(res.ok) items.value = res.data;
+// const res = await useFetch('/api/medicamentos');
+// if(res.ok) items.value = res.data;
 const updateMedicamento = async ({registro, nome, tarja}) => {
-	const res = await $fetch(`/api/medicamentos/${registro}`, {
-		method: 'PUT',
-		body: {nome, tarja},
-	});
-	if(!res.ok) return alert('erro');
-	const {data} = await $fetch('/api/medicamentos');
-	items.value = data;
+	// const res = await $fetch(`/api/medicamentos/${registro}`, {
+	// 	method: 'PUT',
+	// 	body: {nome, tarja},
+	// });
+	// if(!res.ok) return alert('erro');
+	// const {data} = await $fetch('/api/medicamentos');
+	// items.value = data;
 };
+initializeWebSocket('/medicamentos').on('hello', message => items.value.push(message));
 </script>
 
 <template>
@@ -22,7 +23,7 @@ const updateMedicamento = async ({registro, nome, tarja}) => {
 				<th>Nome</th>
 				<th>Tarja</th>
 			</tr>
-			<tr v-for="item in items" :key="item._id">
+			<tr v-for="item in items" :key="item.registro">
 				<td>{{ item.registro }}</td>
 				<td>
 					<input type="text" v-model="item.nome">

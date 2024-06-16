@@ -1,16 +1,17 @@
 <script setup>
 const items = ref([]);
-const res = await useFetch('/api/secretarias');
-if(res.ok) items.value = res.data;
+// const res = await useFetch('/api/secretarias');
+// if(res.ok) items.value = res.data;
 const updateSecretaria = async ({cnpj, nome, regiao, estado, cidade}) => {
-	const res = await $fetch(`/api/secretarias/${cnpj}`, {
-		method: 'PUT',
-		body: {nome, regiao, estado, cidade},
-	});
-	if(!res.ok) return alert('erro');
-	const {data} = await $fetch('/api/secretarias');
-	items.value = data;
+	// const res = await $fetch(`/api/secretarias/${cnpj}`, {
+	// 	method: 'PUT',
+	// 	body: {nome, regiao, estado, cidade},
+	// });
+	// if(!res.ok) return alert('erro');
+	// const {data} = await $fetch('/api/secretarias');
+	// items.value = data;
 };
+initializeWebSocket('/secretarias').on('hello', message => items.value.push(message));
 </script>
 
 <template>
@@ -24,7 +25,7 @@ const updateSecretaria = async ({cnpj, nome, regiao, estado, cidade}) => {
 				<th>Estado</th>
 				<th>Cidade</th>
 			</tr>
-			<tr v-for="item in items" :key="item._id">
+			<tr v-for="item in items" :key="item.cnpj">
 				<td>{{ item.cnpj }}</td>
 				<td>
 					<input type="text" v-model="item.nome">
