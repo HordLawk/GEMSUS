@@ -24,7 +24,7 @@ export default defineNitroPlugin((nitroApp: NitroApp) => {
     await consumer.connect();
     await consumer.subscribe({ topic: 'GEMSUS.farmaceutico', fromBeginning: true });
     await consumer.run({eachMessage: async ({ message }) => void(socket.emit('hello', message.value))});
-    socket.conn.on("close", consumer.disconnect);
+    socket.on("disconnect", consumer.disconnect);
   });
 
   nitroApp.router.use("/socket.io/", defineEventHandler({
