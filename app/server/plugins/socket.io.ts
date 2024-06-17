@@ -25,10 +25,15 @@ export default defineNitroPlugin((nitroApp: NitroApp) => {
         await consumer.subscribe({ topic: 'GEMSUS.farmaceutico', fromBeginning: true });
         await consumer.run({
             eachMessage: async ({ message }) => {
-                const objStr = message.value?.toString('utf-8');
-                const obj = objStr ? JSON.parse(objStr) : {};
-                const { _id: cpf, nome, local } = JSON.parse(obj.payload).fullDocument;
-                socket.emit('read', { cpf, nome, local });
+                try{
+                    const objStr = message.value?.toString('utf-8');
+                    const obj = objStr ? JSON.parse(objStr) : {};
+                    const { _id: cpf, nome, local } = JSON.parse(obj.payload).fullDocument;
+                    socket.emit('read', { cpf, nome, local });
+                }
+                catch(err){
+                    console.error(err);
+                }
             }
         });
         socket.on("disconnect", consumer.disconnect);
@@ -45,7 +50,7 @@ export default defineNitroPlugin((nitroApp: NitroApp) => {
                         local,
                     }),
                 }],
-            });
+            }).catch(console.error);
             await producer.disconnect();
         });
     });
