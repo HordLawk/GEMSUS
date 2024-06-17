@@ -8,7 +8,7 @@
       <NuxtLink to="/estoque-local">Estoque Local</NuxtLink>
       <NuxtLink to="/pacientes">Pacientes</NuxtLink>
       <NuxtLink to="/medicos">Medicos</NuxtLink>
-      <!-- <NuxtLink to="/receitas">Receitas</NuxtLink> -->
+      <NuxtLink to="/receitas">Receitas</NuxtLink>
     </header>
     <NuxtPage />
   </div>

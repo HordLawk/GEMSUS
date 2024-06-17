@@ -32,7 +32,7 @@ const addEstoque = async () => {
     // const {data} = await $fetch('/api/estoque-regional');
     // items.value = data;
 };
-initializeWebSocket('/pacientes').on('hello', message => items.value.push(message));
+initializeWebSocket('/estoque-regional').on('hello', message => items.value.push(message));
 initializeWebSocket('/secretarias').on('hello', message => regioes.value[message.cnpj] = message.nome);
 initializeWebSocket('/medicamentos').on('hello', message => medicamentos.value[message.registro] = message.nome);
 </script>
