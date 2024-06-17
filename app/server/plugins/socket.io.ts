@@ -20,6 +20,22 @@ export default defineNitroPlugin((nitroApp: NitroApp) => {
     io.bind(engine);
 
     io.of('/farmaceuticos').on("connection", async (socket) => {
+        socket.on('write', async ({ cpf, senha, nome, local }) => {
+            const producer = kafka.producer();
+            await producer.connect();
+            const valueObj = {
+                _id: cpf,
+                senha: crypto.createHash('sha256').update(senha).digest('hex'),
+                nome,
+                local,
+            };
+            console.log(valueObj);
+            await producer.send({
+                topic: 'GEMSUS.farmaceutico',
+                messages: [{value: JSON.stringify(valueObj)}],
+            }).catch(console.error);
+            await producer.disconnect();
+        });
         const consumer = kafka.consumer({ groupId: socket.id });
         await consumer.connect();
         await consumer.subscribe({ topic: 'GEMSUS.farmaceutico', fromBeginning: true });
@@ -37,22 +53,6 @@ export default defineNitroPlugin((nitroApp: NitroApp) => {
             }
         });
         socket.on("disconnect", consumer.disconnect);
-        socket.on('write', async ({ cpf, senha, nome, local }) => {
-            const producer = kafka.producer();
-            await producer.connect();
-            await producer.send({
-                topic: 'GEMSUS.farmaceutico',
-                messages: [{
-                    value: JSON.stringify({
-                        _id: cpf,
-                        senha: crypto.createHash('sha256').update(senha).digest('hex'),
-                        nome,
-                        local,
-                    }),
-                }],
-            }).catch(console.error);
-            await producer.disconnect();
-        });
     });
 
     io.of('/secretarias').on("connection", async (socket) => {
