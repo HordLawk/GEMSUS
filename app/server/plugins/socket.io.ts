@@ -134,7 +134,7 @@ export default defineNitroPlugin((nitroApp: NitroApp) => {
                 const obj = objStr ? JSON.parse(objStr) : {};
                 console.log(obj);
                 const { _id: {$oid: id}, data: {$date: ms}, medicamento_id, paciente_id, medico_id } = JSON.parse(obj.payload).fullDocument;
-                socket.emit('hello', { id, data: new Date(ms).toISOString(), medicamento_id, paciente_id, medico_id });
+                socket.emit('hello', { id, data: new Date(ms).toISOString().split('T')[0], medicamento_id, paciente_id, medico_id });
             }
         });
         socket.on("disconnect", consumer.disconnect);
