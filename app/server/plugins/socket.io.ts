@@ -27,7 +27,7 @@ export default defineNitroPlugin((nitroApp: NitroApp) => {
             eachMessage: async ({ message }) => {
                 const objStr = message.value?.toString('utf-8');
                 const obj = objStr ? JSON.parse(objStr) : {};
-                const { _id: {$oid: cpf}, nome, local } = JSON.parse(obj.payload).fullDocument;
+                const { _id: cpf, nome, local } = JSON.parse(obj.payload).fullDocument;
                 socket.emit('hello', { cpf, nome, local });
             }
         });
@@ -42,7 +42,7 @@ export default defineNitroPlugin((nitroApp: NitroApp) => {
             eachMessage: async ({ message }) => {
                 const objStr = message.value?.toString('utf-8');
                 const obj = objStr ? JSON.parse(objStr) : {};
-                const { _id: {$oid: cnpj}, nome, regiao, estado, cidade } = JSON.parse(obj.payload).fullDocument;
+                const { _id: cnpj, nome, regiao, estado, cidade } = JSON.parse(obj.payload).fullDocument;
                 socket.emit('hello', { cnpj, nome, regiao, estado, cidade });
             }
         });
@@ -57,7 +57,7 @@ export default defineNitroPlugin((nitroApp: NitroApp) => {
             eachMessage: async ({ message }) => {
                 const objStr = message.value?.toString('utf-8');
                 const obj = objStr ? JSON.parse(objStr) : {};
-                const { _id: {$oid: registro}, nome, tarja } = JSON.parse(obj.payload).fullDocument;
+                const { _id: registro, nome, tarja } = JSON.parse(obj.payload).fullDocument;
                 socket.emit('hello', { registro, nome, tarja });
             }
         });
@@ -87,7 +87,7 @@ export default defineNitroPlugin((nitroApp: NitroApp) => {
             eachMessage: async ({ message }) => {
                 const objStr = message.value?.toString('utf-8');
                 const obj = objStr ? JSON.parse(objStr) : {};
-                const { _id: {$oid: cpf}, nome, convenio, posto, secretaria_id: regiao } = JSON.parse(obj.payload).fullDocument;
+                const { _id: cpf, nome, convenio, posto, secretaria_id: regiao } = JSON.parse(obj.payload).fullDocument;
                 socket.emit('hello', { cpf, nome, convenio, posto, regiao });
             }
         });
@@ -102,7 +102,7 @@ export default defineNitroPlugin((nitroApp: NitroApp) => {
             eachMessage: async ({ message }) => {
                 const objStr = message.value?.toString('utf-8');
                 const obj = objStr ? JSON.parse(objStr) : {};
-                const { _id: {$oid: crm}, nome, secretaria_id: regiao } = JSON.parse(obj.payload).fullDocument;
+                const { _id: crm, nome, secretaria_id: regiao } = JSON.parse(obj.payload).fullDocument;
                 socket.emit('hello', { crm, nome, regiao });
             }
         });
