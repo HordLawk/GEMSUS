@@ -117,8 +117,8 @@ export default defineNitroPlugin((nitroApp: NitroApp) => {
             eachMessage: async ({ message }) => {
                 const objStr = message.value?.toString('utf-8');
                 const obj = objStr ? JSON.parse(objStr) : {};
-                const { _id: {$oid: id}, quantidade, secretaria_id: regiao, medicamento } = JSON.parse(obj.payload).fullDocument;
-                socket.emit('hello', { id, regiao, quantidade, medicamento });
+                const { _id: {$oid: id}, quantidade, secretaria_id: regiao, medicamento_id } = JSON.parse(obj.payload).fullDocument;
+                socket.emit('hello', { id, regiao, quantidade, medicamento_id });
             }
         });
         socket.on("disconnect", consumer.disconnect);

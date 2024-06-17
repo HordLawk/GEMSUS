@@ -30,20 +30,20 @@ const updateReceita = () => { };
                 <td>
                     <select v-model="item.medicamento_id" required>
                         <option value=""></option>
-                        <option v-for="(registro, nome) in medicamentos" :key="registro" :value="registro">{{ nome }}
+                        <option v-for="{registro, nome} in medicamentos" :key="registro" :value="registro">{{ nome }}
                         </option>
                     </select>
                 </td>
                 <td>
                     <select v-model="item.paciente_id" required>
                         <option value=""></option>
-                        <option v-for="(cpf, nome) in pacientes" :key="cpf" :value="cpf">{{ nome }}</option>
+                        <option v-for="{cpf, nome} in pacientes" :key="cpf" :value="cpf">{{ nome }}</option>
                     </select>
                 </td>
                 <td>
                     <select v-model="item.medico_id" required>
                         <option value=""></option>
-                        <option v-for="(crm, nome) in medicos" :key="crm" :value="crm">{{ nome }}</option>
+                        <option v-for="{crm, nome} in medicos" :key="crm" :value="crm">{{ nome }}</option>
                     </select>
                 </td>
                 <td>

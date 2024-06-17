@@ -14,7 +14,7 @@ const updateMedico = async ({ crm, nome, regiao }) => {
     // const {data} = await $fetch('/api/medicos');
     // items.value = data;
 };
-initializeWebSocket('/pacientes').on('hello', message => items.value.push(message));
+initializeWebSocket('/medicos').on('hello', message => items.value.push(message));
 initializeWebSocket('/secretarias').on('hello', message => regioes.value.push(message));
 </script>
 

@@ -37,7 +37,7 @@ initializeWebSocket('/secretarias').on('hello', message => regioes.value.push(me
                 <td>
                     <select v-model="item.regiao" required>
                         <option value=""></option>
-                        <option v-for="(cnpj, nome) in regioes" :key="cnpj" :value="cnpj">{{ nome }}</option>
+                        <option v-for="{cnpj, nome} in regioes" :key="cnpj" :value="cnpj">{{ nome }}</option>
                     </select>
                 </td>
                 <td>
