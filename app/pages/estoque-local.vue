@@ -4,30 +4,31 @@ const newItem = ref({
 	local: '',
 	medicamento_id: '',
 })
-const res = await useFetch('/api/estoque-local');
-if(res.ok) items.value = res.data;
+// const res = await useFetch('/api/estoque-local');
+// if(res.ok) items.value = res.data;
 const updateEstoque = async updateData => {
-	const res = await $fetch('/api/estoque-local', {
-		method: 'PUT',
-		body: updateData,
-	});
-	if(!res.ok) return alert('erro');
-	const {data} = await $fetch('/api/estoque-local');
-	items.value = data;
+	// const res = await $fetch('/api/estoque-local', {
+	// 	method: 'PUT',
+	// 	body: updateData,
+	// });
+	// if(!res.ok) return alert('erro');
+	// const {data} = await $fetch('/api/estoque-local');
+	// items.value = data;
 };
 const addEstoque = async () => {
-	const res = await $fetch('/api/estoque-local', {
-		method: 'PUT',
-		body: {
-			local: newItem.value.local,
-			medicamento_id: newItem.value.medicamento_id,
-			quantidade: 0,
-		},
-	});
-	if(!res.ok) return alert('erro');
-	const {data} = await $fetch('/api/estoque-local');
-	items.value = data;
+	// const res = await $fetch('/api/estoque-local', {
+	// 	method: 'PUT',
+	// 	body: {
+	// 		local: newItem.value.local,
+	// 		medicamento_id: newItem.value.medicamento_id,
+	// 		quantidade: 0,
+	// 	},
+	// });
+	// if(!res.ok) return alert('erro');
+	// const {data} = await $fetch('/api/estoque-local');
+	// items.value = data;
 };
+initializeWebSocket('/estoque-local').on('hello', message => items.value.push(message));
 </script>
 
 <template>

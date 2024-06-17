@@ -1,35 +1,40 @@
 <script setup>
 const items = ref([]);
+const regioes = ref({});
+const medicamentos = ref({});
 const newItem = ref({
 	regiao: '',
 	medicamento_id: '',
 })
-const resEstoque = await useFetch('/api/estoque-regional');
-if(resEstoque.ok) items.value = resEstoque.data;
-const resRegioes = await useFetch('/api/regioes');
-const regioes = resRegioes.ok ? resRegioes.data : [];
+// const resEstoque = await useFetch('/api/estoque-regional');
+// if(resEstoque.ok) items.value = resEstoque.data;
+// const resRegioes = await useFetch('/api/regioes');
+// const regioes = resRegioes.ok ? resRegioes.data : [];
 const updateEstoque = async updateData => {
-	const res = await $fetch('/api/estoque-regional', {
-		method: 'PUT',
-		body: updateData,
-	});
-	if(!res.ok) return alert('erro');
-	const {data} = await $fetch('/api/estoque-regional');
-	items.value = data;
+	// const res = await $fetch('/api/estoque-regional', {
+	// 	method: 'PUT',
+	// 	body: updateData,
+	// });
+	// if(!res.ok) return alert('erro');
+	// const {data} = await $fetch('/api/estoque-regional');
+	// items.value = data;
 };
 const addEstoque = async () => {
-	const res = await $fetch('/api/estoque-regional', {
-		method: 'PUT',
-		body: {
-			local: newItem.value.regiao,
-			medicamento_id: newItem.value.medicamento_id,
-			quantidade: 0,
-		},
-	});
-	if(!res.ok) return alert('erro');
-	const {data} = await $fetch('/api/estoque-regional');
-	items.value = data;
+	// const res = await $fetch('/api/estoque-regional', {
+	// 	method: 'PUT',
+	// 	body: {
+	// 		local: newItem.value.regiao,
+	// 		medicamento_id: newItem.value.medicamento_id,
+	// 		quantidade: 0,
+	// 	},
+	// });
+	// if(!res.ok) return alert('erro');
+	// const {data} = await $fetch('/api/estoque-regional');
+	// items.value = data;
 };
+initializeWebSocket('/pacientes').on('hello', message => items.value.push(message));
+initializeWebSocket('/secretarias').on('hello', message => regioes.value[message.cnpj] = message.nome);
+initializeWebSocket('/medicamentos').on('hello', message => medicamentos.value[message.registro] = message.nome);
 </script>
 
 <template>
@@ -42,8 +47,8 @@ const addEstoque = async () => {
 				<th>Quantidade</th>
 			</tr>
 			<tr v-for="item in items" :key="item._id">
-				<td>{{ item.regiao }}</td>
-				<td>{{ item.medicamento_id }}</td>
+				<td>{{ regioes[item.regiao] }}</td>
+				<td>{{ medicamentos[item.medicamento_id] }}</td>
 				<td>
 					<input type="text" v-model="item.quantidade">
 				</td>

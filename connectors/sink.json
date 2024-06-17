@@ -2,7 +2,7 @@
     "name": "mongo-sink",
     "config": {
         "connector.class": "com.mongodb.kafka.connect.MongoSinkConnector",
-        "topics": "GEMSUS.farmaceutico,GEMSUS.secretaria,GEMSUS.estoqueRegional",
+        "topics": "GEMSUS.farmaceutico,GEMSUS.secretaria,GEMSUS.estoqueRegional,GEMSUS.medicamento,GEMSUS.estoqueLocal,GEMSUS.paciente,GEMSUS.medico,GEMSUS.receita",
         "connection.uri": "mongodb://mongo1,mongo2/?replicaSet=rs0",
         "key.converter": "org.apache.kafka.connect.storage.StringConverter",
         "value.converter": "org.apache.kafka.connect.json.JsonConverter",
