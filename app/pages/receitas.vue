@@ -23,7 +23,7 @@ const updateReceita = () => { };
                 <th>Paciente</th>
                 <th>Médico</th>
             </tr>
-            <tr v-for="item in items" :key="item._id">
+            <tr v-for="item in items" :key="item.id">
                 <td>
                     <input type="date" v-model="item.data">
                 </td>

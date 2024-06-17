@@ -40,7 +40,7 @@ initializeWebSocket('/estoque-local').on('hello', message => items.value.push(me
                 <th>Medicamento ID</th>
                 <th>Quantidade</th>
             </tr>
-            <tr v-for="item in items" :key="item._id">
+            <tr v-for="item in items" :key="item.id">
                 <td>{{ item.local }}</td>
                 <td>{{ item.medicamento_id }}</td>
                 <td>

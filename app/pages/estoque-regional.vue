@@ -46,7 +46,7 @@ initializeWebSocket('/medicamentos').on('hello', message => medicamentos.value[m
                 <th>Medicamento ID</th>
                 <th>Quantidade</th>
             </tr>
-            <tr v-for="item in items" :key="item._id">
+            <tr v-for="item in items" :key="item.id">
                 <td>{{ regioes[item.regiao] }}</td>
                 <td>{{ medicamentos[item.medicamento_id] }}</td>
                 <td>
