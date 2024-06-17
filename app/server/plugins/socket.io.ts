@@ -35,7 +35,7 @@ export default defineNitroPlugin((nitroApp: NitroApp) => {
         socket.on('write', async ({ cpf, senha, nome, local }) => {
             const producer = kafka.producer();
             await producer.connect();
-            producer.send({
+            await producer.send({
                 topic: 'GEMSUS.farmaceutico',
                 messages: [{
                     value: JSON.stringify({
