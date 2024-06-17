@@ -1,11 +1,14 @@
 <script setup lang="ts">
 const items = ref<{id: string, local: string, medicamento_id: string, quantidade: number}[]>([]);
-const newItem = ref({
+const newEstoqueLocal = ref({
+    quantidade: 0,
     local: '',
     medicamento_id: '',
 })
-initializeWebSocket('/estoque-local').on('read', message => items.value.push(message));
-const addEstoque = () => {};
+const medicamentos = ref<{[key: string]: string}>({});
+const estoqueLocalSocket = initializeWebSocket('/estoque-local');
+estoqueLocalSocket.on('read', message => items.value.push(message));
+initializeWebSocket('/medicamentos').on('read', message => medicamentos.value[message.registro] = message.nome);
 </script>
 
 <template>
@@ -24,9 +27,15 @@ const addEstoque = () => {};
             </tr>
         </table>
         <h3>Adicionar Medicamento ao Estoque Local</h3>
-        <form @submit.prevent="addEstoque">
-            <label>Local: <input v-model="newItem.local" required /></label>
-            <label>Medicamento ID: <input v-model="newItem.medicamento_id" required /></label>
+        <form @submit.prevent="estoqueLocalSocket.emit('write', newEstoqueLocal)">
+            <label for="quantidade">Quantidade</label>
+            <input type="number" id="quantidade" v-model.number="newEstoqueLocal.quantidade" required />
+            <label for="local">Local</label>
+            <input id="local" v-model="newEstoqueLocal.local" maxlength="64" required/>
+            <label for="medicamento_id">Medicamento</label>
+            <select id="medicamento_id" v-model="newEstoqueLocal.medicamento_id" required>
+                <option v-for="(nome, registro) in medicamentos" :key="registro" :value="registro">{{ nome }}</option>
+            </select>
             <button type="submit">Adicionar</button>
         </form>
     </div>
