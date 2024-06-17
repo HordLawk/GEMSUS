@@ -14,12 +14,8 @@ initializeWebSocket('/medicamentos').on('read', message => items.value.push(mess
             </tr>
             <tr v-for="item in items" :key="item.registro">
                 <td>{{ item.registro }}</td>
-                <td>
-                    <input type="text" v-model="item.nome">
-                </td>
-                <td>
-                    <input type="text" v-model="item.tarja">
-                </td>
+                <td>{{ item.nome }}</td>
+                <td>{{ item.tarja }}</td>
             </tr>
         </table>
     </div>

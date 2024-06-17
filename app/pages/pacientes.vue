@@ -1,8 +1,8 @@
 <script setup lang="ts">
 const items = ref<{cpf: string, nome: string, regiao: string, convenio: string, posto: string}[]>([]);
-const regioes = ref<{cnpj: string, nome: string}[]>([]);
+const regioes = ref<{[key: string]: string}>({});
 initializeWebSocket('/pacientes').on('read', message => items.value.push(message));
-initializeWebSocket('/secretarias').on('read', message => regioes.value.push(message));
+initializeWebSocket('/secretarias').on('read', message => regioes.value[message.cnpj] = message.nome);
 </script>
 
 <template>
@@ -18,21 +18,10 @@ initializeWebSocket('/secretarias').on('read', message => regioes.value.push(mes
             </tr>
             <tr v-for="item in items" :key="item.cpf">
                 <td>{{ item.cpf }}</td>
-                <td>
-                    <input type="text" v-model="item.nome">
-                </td>
-                <td>
-                    <select v-model="item.regiao" required>
-                        <option value=""></option>
-                        <option v-for="{cnpj, nome} in regioes" :key="cnpj" :value="cnpj">{{ nome }}</option>
-                    </select>
-                </td>
-                <td>
-                    <input type="text" v-model="item.convenio">
-                </td>
-                <td>
-                    <input type="text" v-model="item.posto">
-                </td>
+                <td>{{ item.nome }}</td>
+                <td>{{ regioes[item.regiao] }}</td>
+                <td>{{ item.convenio }}</td>
+                <td>{{ item.posto }}</td>
             </tr>
         </table>
     </div>

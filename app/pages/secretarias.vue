@@ -10,21 +10,14 @@ initializeWebSocket('/secretarias').on('hello', message => items.value.push(mess
             <tr>
                 <th>CNPJ</th>
                 <th>Nome</th>
-                <th>Regiao</th>
                 <th>Estado</th>
                 <th>Cidade</th>
             </tr>
             <tr v-for="item in items" :key="item.cnpj">
                 <td>{{ item.cnpj }}</td>
-                <td>
-                    <input type="text" v-model="item.nome">
-                </td>
-                <td>
-                    <input type="text" v-model="item.estado">
-                </td>
-                <td>
-                    <input type="text" v-model="item.cidade">
-                </td>
+                <td>{{ item.nome }}</td>
+                <td>{{ item.estado }}</td>
+                <td>{{ item.cidade }}</td>
             </tr>
         </table>
     </div>

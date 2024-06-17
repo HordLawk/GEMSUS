@@ -20,9 +20,7 @@ const addEstoque = () => {};
             <tr v-for="item in items" :key="item.id">
                 <td>{{ item.local }}</td>
                 <td>{{ item.medicamento_id }}</td>
-                <td>
-                    <input type="text" v-model="item.quantidade">
-                </td>
+                <td>{{ item.quantidade }}</td>
             </tr>
         </table>
         <h3>Adicionar Medicamento ao Estoque Local</h3>

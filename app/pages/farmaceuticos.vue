@@ -14,12 +14,8 @@ initializeWebSocket('/farmaceuticos').on('read', message => items.value.push(mes
             </tr>
             <tr v-for="item in items" :key="item.cpf">
                 <td>{{ item.cpf }}</td>
-                <td>
-                    <input type="text" v-model="item.nome">
-                </td>
-                <td>
-                    <input type="text" v-model="item.local">
-                </td>
+                <td>{{ item.nome }}</td>
+                <td>{{ item.local }}</td>
             </tr>
         </table>
     </div>

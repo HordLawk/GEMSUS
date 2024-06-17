@@ -24,9 +24,7 @@ const addEstoque = () => {};
             <tr v-for="item in items" :key="item.id">
                 <td>{{ regioes[item.regiao] }}</td>
                 <td>{{ medicamentos[item.medicamento_id] }}</td>
-                <td>
-                    <input type="text" v-model="item.quantidade">
-                </td>
+                <td>{{ item.quantidade }}</td>
             </tr>
         </table>
         <h3>Adicionar Medicamento ao Estoque Regional</h3>

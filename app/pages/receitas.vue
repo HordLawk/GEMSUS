@@ -1,12 +1,12 @@
 <script setup lang="ts">
 const items = ref<{id: string, data: string, medicamento_id: string, paciente_id: string, medico_id: string}[]>([]);
-const medicamentos = ref<{registro: string, nome: string}[]>([]);
-const pacientes = ref<{cpf: string, nome: string}[]>([]);
-const medicos = ref<{crm: string, nome: string}[]>([]);
+const medicamentos = ref<{[key: string]: string}>({});
+const pacientes = ref<{[key: string]: string}>({});
+const medicos = ref<{[key: string]: string}>({});
 initializeWebSocket('/receitas').on('read', message => items.value.push(message));
-initializeWebSocket('/medicamentos').on('read', message => medicamentos.value.push(message));
-initializeWebSocket('/pacientes').on('read', message => pacientes.value.push(message));
-initializeWebSocket('/medicos').on('read', message => medicos.value.push(message));
+initializeWebSocket('/medicamentos').on('read', message => medicamentos.value[message.registro] = message.nome);
+initializeWebSocket('/pacientes').on('read', message => pacientes.value[message.cpf] = message.nome);
+initializeWebSocket('/medicos').on('read', message => medicos.value[message.crm] = message.nome);
 </script>
 
 <template>
@@ -20,28 +20,10 @@ initializeWebSocket('/medicos').on('read', message => medicos.value.push(message
                 <th>Médico</th>
             </tr>
             <tr v-for="item in items" :key="item.id">
-                <td>
-                    <input type="date" v-model="item.data">
-                </td>
-                <td>
-                    <select v-model="item.medicamento_id" required>
-                        <option value=""></option>
-                        <option v-for="{registro, nome} in medicamentos" :key="registro" :value="registro">{{ nome }}
-                        </option>
-                    </select>
-                </td>
-                <td>
-                    <select v-model="item.paciente_id" required>
-                        <option value=""></option>
-                        <option v-for="{cpf, nome} in pacientes" :key="cpf" :value="cpf">{{ nome }}</option>
-                    </select>
-                </td>
-                <td>
-                    <select v-model="item.medico_id" required>
-                        <option value=""></option>
-                        <option v-for="{crm, nome} in medicos" :key="crm" :value="crm">{{ nome }}</option>
-                    </select>
-                </td>
+                <td>{{ item.data }}</td>
+                <td>{{ medicamentos[item.medicamento_id] }}</td>
+                <td>{{ pacientes[item.paciente_id] }}</td>
+                <td>{{ medicos[item.medico_id] }}</td>
             </tr>
         </table>
     </div>
