@@ -3,8 +3,8 @@ import { Server as Engine } from "engine.io";
 import { Server } from "socket.io";
 import { defineEventHandler } from "h3";
 import { Kafka } from 'kafkajs';
+import crypto from 'crypto';
 
-console.log('criando');
 const kafka = new Kafka({
     clientId: 'my-app',
     brokers: ['broker:29092', 'broker:9092'],
@@ -28,10 +28,26 @@ export default defineNitroPlugin((nitroApp: NitroApp) => {
                 const objStr = message.value?.toString('utf-8');
                 const obj = objStr ? JSON.parse(objStr) : {};
                 const { _id: cpf, nome, local } = JSON.parse(obj.payload).fullDocument;
-                socket.emit('hello', { cpf, nome, local });
+                socket.emit('read', { cpf, nome, local });
             }
         });
         socket.on("disconnect", consumer.disconnect);
+        socket.on('write', async ({ cpf, senha, nome, local }) => {
+            const producer = kafka.producer();
+            await producer.connect();
+            producer.send({
+                topic: 'GEMSUS.farmaceutico',
+                messages: [{
+                    value: JSON.stringify({
+                        _id: cpf,
+                        senha: crypto.createHash('sha256').update(senha).digest('hex'),
+                        nome,
+                        local,
+                    }),
+                }],
+            });
+            await producer.disconnect();
+        });
     });
 
     io.of('/secretarias').on("connection", async (socket) => {
@@ -42,8 +58,8 @@ export default defineNitroPlugin((nitroApp: NitroApp) => {
             eachMessage: async ({ message }) => {
                 const objStr = message.value?.toString('utf-8');
                 const obj = objStr ? JSON.parse(objStr) : {};
-                const { _id: cnpj, nome, regiao, estado, cidade } = JSON.parse(obj.payload).fullDocument;
-                socket.emit('hello', { cnpj, nome, regiao, estado, cidade });
+                const { _id: id, nome, estado, cidade } = JSON.parse(obj.payload).fullDocument;
+                socket.emit('read', { id, nome, estado, cidade });
             }
         });
         socket.on("disconnect", consumer.disconnect);
@@ -58,7 +74,7 @@ export default defineNitroPlugin((nitroApp: NitroApp) => {
                 const objStr = message.value?.toString('utf-8');
                 const obj = objStr ? JSON.parse(objStr) : {};
                 const { _id: registro, nome, tarja } = JSON.parse(obj.payload).fullDocument;
-                socket.emit('hello', { registro, nome, tarja });
+                socket.emit('read', { registro, nome, tarja });
             }
         });
         socket.on("disconnect", consumer.disconnect);
@@ -73,7 +89,7 @@ export default defineNitroPlugin((nitroApp: NitroApp) => {
                 const objStr = message.value?.toString('utf-8');
                 const obj = objStr ? JSON.parse(objStr) : {};
                 const { _id: {$oid: id}, quantidade, local, medicamento_id } = JSON.parse(obj.payload).fullDocument;
-                socket.emit('hello', { id, quantidade, local, medicamento_id });
+                socket.emit('read', { id, quantidade, local, medicamento_id });
             }
         });
         socket.on("disconnect", consumer.disconnect);
@@ -88,7 +104,7 @@ export default defineNitroPlugin((nitroApp: NitroApp) => {
                 const objStr = message.value?.toString('utf-8');
                 const obj = objStr ? JSON.parse(objStr) : {};
                 const { _id: cpf, nome, convenio, posto, secretaria_id: regiao } = JSON.parse(obj.payload).fullDocument;
-                socket.emit('hello', { cpf, nome, convenio, posto, regiao });
+                socket.emit('read', { cpf, nome, convenio, posto, regiao });
             }
         });
         socket.on("disconnect", consumer.disconnect);
@@ -103,7 +119,7 @@ export default defineNitroPlugin((nitroApp: NitroApp) => {
                 const objStr = message.value?.toString('utf-8');
                 const obj = objStr ? JSON.parse(objStr) : {};
                 const { _id: crm, nome, secretaria_id: regiao } = JSON.parse(obj.payload).fullDocument;
-                socket.emit('hello', { crm, nome, regiao });
+                socket.emit('read', { crm, nome, regiao });
             }
         });
         socket.on("disconnect", consumer.disconnect);
@@ -118,7 +134,7 @@ export default defineNitroPlugin((nitroApp: NitroApp) => {
                 const objStr = message.value?.toString('utf-8');
                 const obj = objStr ? JSON.parse(objStr) : {};
                 const { _id: {$oid: id}, quantidade, secretaria_id: regiao, medicamento_id } = JSON.parse(obj.payload).fullDocument;
-                socket.emit('hello', { id, regiao, quantidade, medicamento_id });
+                socket.emit('read', { id, regiao, quantidade, medicamento_id });
             }
         });
         socket.on("disconnect", consumer.disconnect);
@@ -134,7 +150,7 @@ export default defineNitroPlugin((nitroApp: NitroApp) => {
                 const obj = objStr ? JSON.parse(objStr) : {};
                 console.log(obj);
                 const { _id: {$oid: id}, data: {$date: ms}, medicamento_id, paciente_id, medico_id } = JSON.parse(obj.payload).fullDocument;
-                socket.emit('hello', { id, data: new Date(ms).toISOString().split('T')[0], medicamento_id, paciente_id, medico_id });
+                socket.emit('read', { id, data: new Date(ms).toISOString().split('T')[0], medicamento_id, paciente_id, medico_id });
             }
         });
         socket.on("disconnect", consumer.disconnect);
