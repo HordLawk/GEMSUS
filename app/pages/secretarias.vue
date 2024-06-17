@@ -1,16 +1,5 @@
-<script setup>
-const items = ref([]);
-// const res = await useFetch('/api/secretarias');
-// if(res.ok) items.value = res.data;
-const updateSecretaria = async ({ cnpj, nome, regiao, estado, cidade }) => {
-    // const res = await $fetch(`/api/secretarias/${cnpj}`, {
-    // 	method: 'PUT',
-    // 	body: {nome, regiao, estado, cidade},
-    // });
-    // if(!res.ok) return alert('erro');
-    // const {data} = await $fetch('/api/secretarias');
-    // items.value = data;
-};
+<script setup lang="ts">
+const items = ref<{cnpj: string, nome: string, regiao: string, estado: string, cidade: string}[]>([]);
 initializeWebSocket('/secretarias').on('hello', message => items.value.push(message));
 </script>
 
@@ -35,9 +24,6 @@ initializeWebSocket('/secretarias').on('hello', message => items.value.push(mess
                 </td>
                 <td>
                     <input type="text" v-model="item.cidade">
-                </td>
-                <td>
-                    <button @click="updateSecretaria(item)">salvar</button>
                 </td>
             </tr>
         </table>

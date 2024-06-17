@@ -1,21 +1,8 @@
-<script setup>
-const items = ref([]);
-const regioes = ref([]);
-// const res = await useFetch('/api/medicos');
-// if(res.ok) items.value = res.data;
-// const resRegioes = await useFetch('/api/regioes');
-// const regioes = resRegioes.ok ? resRegioes.data : [];
-const updateMedico = async ({ crm, nome, regiao }) => {
-    // const res = await $fetch(`/api/medicos/${crm}`, {
-    // 	method: 'PUT',
-    // 	body: {nome, regiao},
-    // });
-    // if(!res.ok) return alert('erro');
-    // const {data} = await $fetch('/api/medicos');
-    // items.value = data;
-};
-initializeWebSocket('/medicos').on('hello', message => items.value.push(message));
-initializeWebSocket('/secretarias').on('hello', message => regioes.value.push(message));
+<script setup lang="ts">
+const items = ref<{crm: string, nome: string, regiao: string}[]>([]);
+const regioes = ref<{cnpj: string, nome: string}[]>([]);
+initializeWebSocket('/medicos').on('read', message => items.value.push(message));
+initializeWebSocket('/secretarias').on('read', message => regioes.value.push(message));
 </script>
 
 <template>
@@ -37,9 +24,6 @@ initializeWebSocket('/secretarias').on('hello', message => regioes.value.push(me
                         <option value=""></option>
                         <option v-for="{cnpj, nome} in regioes" :key="cnpj" :value="cnpj">{{ nome }}</option>
                     </select>
-                </td>
-                <td>
-                    <button @click="updateMedico(item)">salvar</button>
                 </td>
             </tr>
         </table>

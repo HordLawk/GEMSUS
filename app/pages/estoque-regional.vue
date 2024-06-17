@@ -1,40 +1,15 @@
-<script setup>
-const items = ref([]);
-const regioes = ref({});
-const medicamentos = ref({});
+<script setup lang="ts">
+const items = ref<{id: string, regiao: string, medicamento_id: string, quantidade: number}[]>([]);
+const regioes = ref<{[key: string]: string}>({});
+const medicamentos = ref<{[key: string]: string}>({});
 const newItem = ref({
     regiao: '',
     medicamento_id: '',
 })
-// const resEstoque = await useFetch('/api/estoque-regional');
-// if(resEstoque.ok) items.value = resEstoque.data;
-// const resRegioes = await useFetch('/api/regioes');
-// const regioes = resRegioes.ok ? resRegioes.data : [];
-const updateEstoque = async updateData => {
-    // const res = await $fetch('/api/estoque-regional', {
-    // 	method: 'PUT',
-    // 	body: updateData,
-    // });
-    // if(!res.ok) return alert('erro');
-    // const {data} = await $fetch('/api/estoque-regional');
-    // items.value = data;
-};
-const addEstoque = async () => {
-    // const res = await $fetch('/api/estoque-regional', {
-    // 	method: 'PUT',
-    // 	body: {
-    // 		local: newItem.value.regiao,
-    // 		medicamento_id: newItem.value.medicamento_id,
-    // 		quantidade: 0,
-    // 	},
-    // });
-    // if(!res.ok) return alert('erro');
-    // const {data} = await $fetch('/api/estoque-regional');
-    // items.value = data;
-};
-initializeWebSocket('/estoque-regional').on('hello', message => items.value.push(message));
-initializeWebSocket('/secretarias').on('hello', message => regioes.value[message.cnpj] = message.nome);
-initializeWebSocket('/medicamentos').on('hello', message => medicamentos.value[message.registro] = message.nome);
+initializeWebSocket('/estoque-regional').on('read', message => items.value.push(message));
+initializeWebSocket('/secretarias').on('read', message => regioes.value[message.cnpj] = message.nome);
+initializeWebSocket('/medicamentos').on('read', message => medicamentos.value[message.registro] = message.nome);
+const addEstoque = () => {};
 </script>
 
 <template>
@@ -51,9 +26,6 @@ initializeWebSocket('/medicamentos').on('hello', message => medicamentos.value[m
                 <td>{{ medicamentos[item.medicamento_id] }}</td>
                 <td>
                     <input type="text" v-model="item.quantidade">
-                </td>
-                <td>
-                    <button @click="updateEstoque(item)">salvar</button>
                 </td>
             </tr>
         </table>

@@ -1,21 +1,8 @@
-<script setup>
-const items = ref([]);
-const regioes = ref([]);
-// const res = await useFetch('/api/pacientes');
-// if(res.ok) items.value = res.data;
-// const resRegioes = await useFetch('/api/regioes');
-// const regioes = resRegioes.ok ? resRegioes.data : [];
-const updatePaciente = async ({ cpf, nome, regiao, convenio, posto }) => {
-    // const res = await $fetch(`/api/pacientes/${cpf}`, {
-    // 	method: 'PUT',
-    // 	body: {nome, regiao, convenio, posto},
-    // });
-    // if(!res.ok) return alert('erro');
-    // const {data} = await $fetch('/api/pacientes');
-    // items.value = data;
-};
-initializeWebSocket('/pacientes').on('hello', message => items.value.push(message));
-initializeWebSocket('/secretarias').on('hello', message => regioes.value.push(message));
+<script setup lang="ts">
+const items = ref<{cpf: string, nome: string, regiao: string, convenio: string, posto: string}[]>([]);
+const regioes = ref<{cnpj: string, nome: string}[]>([]);
+initializeWebSocket('/pacientes').on('read', message => items.value.push(message));
+initializeWebSocket('/secretarias').on('read', message => regioes.value.push(message));
 </script>
 
 <template>
@@ -45,9 +32,6 @@ initializeWebSocket('/secretarias').on('hello', message => regioes.value.push(me
                 </td>
                 <td>
                     <input type="text" v-model="item.posto">
-                </td>
-                <td>
-                    <button @click="updatePaciente(item)">salvar</button>
                 </td>
             </tr>
         </table>

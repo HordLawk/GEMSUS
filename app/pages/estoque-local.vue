@@ -1,34 +1,11 @@
-<script setup>
-const items = ref([]);
+<script setup lang="ts">
+const items = ref<{id: string, local: string, medicamento_id: string, quantidade: number}[]>([]);
 const newItem = ref({
     local: '',
     medicamento_id: '',
 })
-// const res = await useFetch('/api/estoque-local');
-// if(res.ok) items.value = res.data;
-const updateEstoque = async updateData => {
-    // const res = await $fetch('/api/estoque-local', {
-    // 	method: 'PUT',
-    // 	body: updateData,
-    // });
-    // if(!res.ok) return alert('erro');
-    // const {data} = await $fetch('/api/estoque-local');
-    // items.value = data;
-};
-const addEstoque = async () => {
-    // const res = await $fetch('/api/estoque-local', {
-    // 	method: 'PUT',
-    // 	body: {
-    // 		local: newItem.value.local,
-    // 		medicamento_id: newItem.value.medicamento_id,
-    // 		quantidade: 0,
-    // 	},
-    // });
-    // if(!res.ok) return alert('erro');
-    // const {data} = await $fetch('/api/estoque-local');
-    // items.value = data;
-};
-initializeWebSocket('/estoque-local').on('hello', message => items.value.push(message));
+initializeWebSocket('/estoque-local').on('read', message => items.value.push(message));
+const addEstoque = () => {};
 </script>
 
 <template>
@@ -45,9 +22,6 @@ initializeWebSocket('/estoque-local').on('hello', message => items.value.push(me
                 <td>{{ item.medicamento_id }}</td>
                 <td>
                     <input type="text" v-model="item.quantidade">
-                </td>
-                <td>
-                    <button @click="updateEstoque(item)">salvar</button>
                 </td>
             </tr>
         </table>

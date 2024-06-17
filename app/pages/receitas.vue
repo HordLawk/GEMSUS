@@ -1,16 +1,12 @@
-<script setup>
-const items = ref([]);
-const medicamentos = ref([]);
-const pacientes = ref([]);
-const medicos = ref([]);
-initializeWebSocket('/receitas').on('hello', message => {
-    console.log(message);
-    items.value.push(message);
-});
-initializeWebSocket('/medicamentos').on('hello', message => medicamentos.value.push(message));
-initializeWebSocket('/pacientes').on('hello', message => pacientes.value.push(message));
-initializeWebSocket('/medicos').on('hello', message => medicos.value.push(message));
-const updateReceita = () => { };
+<script setup lang="ts">
+const items = ref<{id: string, data: string, medicamento_id: string, paciente_id: string, medico_id: string}[]>([]);
+const medicamentos = ref<{registro: string, nome: string}[]>([]);
+const pacientes = ref<{cpf: string, nome: string}[]>([]);
+const medicos = ref<{crm: string, nome: string}[]>([]);
+initializeWebSocket('/receitas').on('read', message => items.value.push(message));
+initializeWebSocket('/medicamentos').on('read', message => medicamentos.value.push(message));
+initializeWebSocket('/pacientes').on('read', message => pacientes.value.push(message));
+initializeWebSocket('/medicos').on('read', message => medicos.value.push(message));
 </script>
 
 <template>
@@ -45,9 +41,6 @@ const updateReceita = () => { };
                         <option value=""></option>
                         <option v-for="{crm, nome} in medicos" :key="crm" :value="crm">{{ nome }}</option>
                     </select>
-                </td>
-                <td>
-                    <button @click="updateReceita(item)">salvar</button>
                 </td>
             </tr>
         </table>
