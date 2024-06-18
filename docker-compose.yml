@@ -144,13 +144,38 @@ services:
     build:
       context: .
       dockerfile: app.Dockerfile
-    ports:
-      - "5028:3000"
     command: node .output/server/index.mjs
     depends_on:
       - mongo1-setup
     networks:
       - localnet
+    restart: always
+
+  app2:
+    image: "app:1.0"
+    container_name: app2
+    build:
+      context: .
+      dockerfile: app.Dockerfile
+    command: node .output/server/index.mjs
+    depends_on:
+      - mongo1-setup
+    networks:
+      - localnet
+    restart: always
+
+  balancer:
+    image: nginx
+    container_name: balancer
+    depends_on:
+      - app
+      - app2
+    networks:
+      - localnet
+    ports:
+      - "5028:80"
+    volumes:
+      - ./load-balancer.conf:/etc/nginx/conf.d/load-balancer.conf:ro
     restart: always
 
 networks:
