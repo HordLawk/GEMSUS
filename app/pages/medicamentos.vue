@@ -31,7 +31,7 @@ medicamentosSocket.on('read', message => items.value.push(message));
             <label for="nome">Nome</label>
             <input id="nome" v-model="newMedicamento.nome" maxlength="64" required />
             <label for="tarja">Tarja</label>
-            <select id="tarja" v-model="newMedicamento.tarja" required>
+            <select id="tarja" v-model="newMedicamento.tarja">
                 <option value="">Sem tarja</option>
                 <option value="A">Amarela</option>
                 <option value="V">Vermelha</option>
