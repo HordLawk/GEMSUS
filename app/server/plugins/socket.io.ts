@@ -21,7 +21,7 @@ export default defineNitroPlugin((nitroApp: NitroApp) => {
 
     io.of('/farmaceuticos').on("connection", async (socket) => {
         socket.on('write', async ({ cpf, senha, nome, local }) => {
-            const producer = kafka.producer();
+            const producer = kafka.producer({idempotent: true});
             await producer.connect();
             const valueObj = {
                 _id: cpf,
