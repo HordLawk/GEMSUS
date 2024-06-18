@@ -29,10 +29,11 @@ export default defineNitroPlugin((nitroApp: NitroApp) => {
                 nome,
                 local,
             };
-            console.log(valueObj);
+            console.log('1');
+            console.log(JSON.stringify(valueObj));
             await producer.send({
                 topic: 'GEMSUS.farmaceutico',
-                messages: [{value: JSON.stringify(valueObj)}],
+                messages: [{value: Buffer.from(JSON.stringify(valueObj))}],
             }).catch(console.error);
             await producer.disconnect();
         });
@@ -41,15 +42,17 @@ export default defineNitroPlugin((nitroApp: NitroApp) => {
         await consumer.subscribe({ topic: 'GEMSUS.farmaceutico', fromBeginning: true });
         await consumer.run({
             eachMessage: async ({ message }) => {
+                let obj;
                 try{
                     const objStr = message.value?.toString('utf-8');
-                    const obj = objStr ? JSON.parse(objStr) : {};
-                    const { _id: cpf, nome, local } = JSON.parse(obj.payload).fullDocument;
-                    socket.emit('read', { cpf, nome, local });
+                    obj = objStr ? JSON.parse(objStr) : {};
                 }
                 catch(err){
                     console.error(err);
+                    return;
                 }
+                const { _id: cpf, nome, local } = JSON.parse(obj.payload).fullDocument;
+                socket.emit('read', { cpf, nome, local });
             }
         });
         socket.on("disconnect", consumer.disconnect);
