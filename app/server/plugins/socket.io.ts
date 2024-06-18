@@ -40,6 +40,7 @@ export default defineNitroPlugin((nitroApp: NitroApp) => {
         const consumer = kafka.consumer({ groupId: socket.id });
         await consumer.connect();
         await consumer.subscribe({ topic: 'GEMSUS.farmaceutico', fromBeginning: true });
+        const uniqueIds = new Set();
         await consumer.run({
             eachMessage: async ({ message }) => {
                 let obj;
@@ -53,6 +54,8 @@ export default defineNitroPlugin((nitroApp: NitroApp) => {
                 }
                 console.log(obj);
                 const { _id: cpf, nome, local } = obj.payload ? JSON.parse(obj.payload).fullDocument : obj;
+                if(uniqueIds.has(cpf)) return;
+                uniqueIds.add(cpf);
                 socket.emit('read', { cpf, nome, local });
             }
         });
