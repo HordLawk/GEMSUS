@@ -78,14 +78,31 @@ export default defineNitroPlugin((nitroApp: NitroApp) => {
     });
 
     io.of('/medicamentos').on("connection", async (socket) => {
+        socket.on('write', async ({ registro, nome, tarja }) => {
+            const producer = kafka.producer({idempotent: true});
+            await producer.connect();
+            const valueObj = {
+                _id: registro,
+                nome,
+                tarja,
+            };
+            await producer.send({
+                topic: 'GEMSUS.medicamento',
+                messages: [{value: JSON.stringify(valueObj)}],
+            }).catch(console.error);
+            await producer.disconnect();
+        });
         const consumer = kafka.consumer({ groupId: socket.id });
         await consumer.connect();
         await consumer.subscribe({ topic: 'GEMSUS.medicamento', fromBeginning: true });
+        const uniqueIds = new Set();
         await consumer.run({
             eachMessage: async ({ message }) => {
                 const objStr = message.value?.toString('utf-8');
                 const obj = objStr ? JSON.parse(objStr) : {};
-                const { _id: registro, nome, tarja } = JSON.parse(obj.payload).fullDocument;
+                const { _id: registro, nome, tarja } = obj.payload ? JSON.parse(obj.payload).fullDocument : obj;
+                if(uniqueIds.has(registro)) return;
+                uniqueIds.add(registro);
                 socket.emit('read', { registro, nome, tarja });
             }
         });
