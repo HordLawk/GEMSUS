@@ -7,7 +7,7 @@
     ```shell
     sudo docker compose up -d
     ```
-3.  It make take up to a few minutes for the whole system to start up. The easiest way to know when everything is ready
+3.  It may take up to a few minutes for the whole system to start up. The easiest way to know when everything is ready
     is to check whether the `mongo-setup` container has successfully exited. Which can be done by following its log
     output with the following command:
     ```shell
