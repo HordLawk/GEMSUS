@@ -14,4 +14,4 @@
     sudo docker logs -f mongo-setup
     ```
 4.  If everything worked correctly you should be able to access the web client at `localhost:5028` (the port can be
-    changed in `./docker-compose.yml` under the `ports` sections of the `balancer` service)
+    changed in `./docker-compose.yml` under the `ports` section of the `balancer` service)
