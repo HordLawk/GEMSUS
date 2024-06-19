@@ -34,8 +34,6 @@ services:
     build:
       context: .
       dockerfile: connect.Dockerfile
-    ports:
-      - "35000:35000"
     hostname: connect
     container_name: connect
     depends_on:
@@ -95,18 +93,6 @@ services:
       SCHEMA_REGISTRY_KAFKASTORE_CONNECTION_URL: "zookeeper:2181"
       SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
 
-  mongo2:
-    image: mongo:7.0.8
-    container_name: mongo2
-    command: --replSet rs0 --oplogSize 128
-    depends_on:
-      - zookeeper
-      - broker
-      - connect
-    networks:
-      - localnet
-    restart: always
-
   mongo1:
     image: mongo:7.0.8
     container_name: mongo1
@@ -119,34 +105,59 @@ services:
       - localnet
     restart: always
 
-  mongo1-setup:
+  mongo2:
+    image: mongo:7.0.8
+    container_name: mongo2
+    command: --replSet rs0 --oplogSize 128
+    depends_on:
+      - zookeeper
+      - broker
+      - connect
+    networks:
+      - localnet
+    restart: always
+
+  mongo3:
+    image: mongo:7.0.8
+    container_name: mongo3
+    command: --replSet rs0 --oplogSize 128
+    depends_on:
+      - zookeeper
+      - broker
+      - connect
+    networks:
+      - localnet
+    restart: always
+
+  mongo-setup:
     image: "mongodb-kafka-base-setup-mongod:1.0"
-    container_name: mongo1-setup
+    container_name: mongo-setup
     build:
       context: .
       dockerfile: mongosetup.Dockerfile
     depends_on:
       - mongo1
       - mongo2
+      - mongo3
     networks:
       - localnet
     entrypoint:
       [
         "bash",
         "-c",
-        "sleep 10 && mongosh --host mongo1 config-replica.js && sleep 10 && mongosh --host rs0/mongo1,mongo2 mongo-init.js && cx /connectors/source.json && cx /connectors/sink.json",
+        "sleep 10 && mongosh --host mongo1 config-replica.js && sleep 10 && mongosh --host rs0/mongo1,mongo2,mongo3 mongo-init.js && cx /connectors/source.json && cx /connectors/sink.json",
       ]
     restart: "no"
 
-  app:
+  app1:
     image: "app:1.0"
-    container_name: app
+    container_name: app1
     build:
       context: .
       dockerfile: app.Dockerfile
     command: node .output/server/index.mjs
     depends_on:
-      - mongo1-setup
+      - mongo-setup
     networks:
       - localnet
     restart: always
@@ -159,7 +170,7 @@ services:
       dockerfile: app.Dockerfile
     command: node .output/server/index.mjs
     depends_on:
-      - mongo1-setup
+      - mongo-setup
     networks:
       - localnet
     restart: always
@@ -168,7 +179,7 @@ services:
     image: nginx:1.27
     container_name: balancer
     depends_on:
-      - app
+      - app1
       - app2
     networks:
       - localnet
