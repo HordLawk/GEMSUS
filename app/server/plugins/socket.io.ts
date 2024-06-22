@@ -7,7 +7,7 @@ import crypto from 'crypto';
 
 const kafka = new Kafka({
     clientId: 'my-app',
-    brokers: ['broker:29092', 'broker:9092'],
+    brokers: ['broker:29092', 'broker:9092', 'broker2:29092', 'broker2:9092'],
     retry: {
         retries: 10,
     },
