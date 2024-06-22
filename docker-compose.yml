@@ -128,7 +128,7 @@ services:
       [
         "bash",
         "-c",
-        "sleep 1 && mongosh --host mongo1 config-replica.js && sleep 1 && mongosh --host rs0/mongo1,mongo2,mongo3 mongo-init.js && cx /connectors/source.json && cx /connectors/sink.json",
+        "sleep 3 && mongosh --host mongo1 config-replica.js && sleep 1 && mongosh --host rs0/mongo1,mongo2,mongo3 mongo-init.js && cx /connectors/source.json && cx /connectors/sink.json",
       ]
     restart: "no"
 
